@@ -7,3 +7,4 @@ ext/*
 *.swp
 *.swo
 CMakeLists.txt.user
+.vscode/*
