@@ -32,7 +32,8 @@ out vec2 uv;              ///< uv coordinates
  */
 vec3 transformNormal(const in mat4 modelWorld, const in vec3 normalInObject)
 {
-  return normalInObject;
+  mat3 normalMatrix = transpose(inverse(mat3(modelWorld)));
+  return normalMatrix * vec3(normalInObject);
 }
 
 void main()

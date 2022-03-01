@@ -508,17 +508,48 @@ private:
  */
 template <typename T> void Buffer::setData(const std::vector<T> & values)
 {
-  FAIL_BECAUSE_INCOMPLETE;
+  FAIL_BECAUSE_INCOMPLETE; // For compatibility reasons
 }
 
+  /**
+   * @brief sets up a given VBO.
+   * @param attributeIndex the anchor point of the VBO to set-up
+   * @param values the values to be sent to the VBO location.
+   *
+   * @note PA1 (part 2): this method must do the following operations:
+   * 	- check that @p attributeIndex is not out of bounds
+   * 	- set up this VBO with the @p values
+   * 	- encapsulate the VBO GPU location in this VAO GPU location using VAO::encapsulateVBO
+   *
+   * @see VAO::encapsulateVBO
+   */
 template <typename T> void VAO::setVBO(uint attributeIndex, const std::vector<T> & values)
 {
-  FAIL_BECAUSE_INCOMPLETE;
+  if (attributeIndex < this->m_vbos.size()) {
+    std::shared_ptr<Buffer> vbo = this->m_vbos[attributeIndex];
+    vbo->setData(values);
+    this->encapsulateVBO(attributeIndex);
+  } else {
+    FAIL_BECAUSE_INCOMPLETE;
+  }
 }
 
+  /**
+   * @brief sets up the IBO
+   * @param values the values to be sent to the IBO location.
+   *
+   * @note PA1 (part 2): this method must :
+   * 	- bind this VAO instance
+   * 	- set up the IBO with the @p values
+   * 	- update the element buffer binding of this VAO GPU location (to do so you just need to bind the IBO)
+   * 	- reset the openGL state so that no VAO / Buffer is left bound
+   */
 template <typename T> void VAO::setIBO(const std::vector<T> & values)
 {
-  FAIL_BECAUSE_INCOMPLETE;
+  this->bind();
+  this->m_ibo.setData(values);
+  this->m_ibo.bind();
+  this->unbind();
 }
 
 template <typename T> void Program::setUniform(const std::string & name, const T & val) const

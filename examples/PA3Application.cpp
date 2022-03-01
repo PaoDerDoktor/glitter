@@ -26,7 +26,45 @@ std::shared_ptr<VAO> PA3Application::makeParamSurf(DiscreteLinRange rgPhi, Discr
   std::vector<glm::vec3> positions;
   std::vector<glm::vec3> colors;
   std::vector<uint> ibo;
-  FAIL_BECAUSE_INCOMPLETE;
+  
+  for (uint i=0; i < rgPhi.nbVals; i++) {
+    for (uint j=0; j < rgTheta.nbVals; j++) {
+      float phi   = rgPhi.value(i);
+      float theta = rgTheta.value(j);
+
+      positions.push_back(posFunc(phi, theta));
+      colors.push_back({0, 100, 0});
+
+      uint ni;
+      uint nj;
+
+      if (i <= rgPhi.nbVals-2) {
+        ni = (i+1);
+      } else if (isCyclicInPhi) {
+        ni = 0;
+      } else {
+        continue;
+      }
+
+      if (j <= rgTheta.nbVals-2) {
+        nj = (j+1);
+      } else if (isCyclicInTheta) {
+        nj = 0;
+      } else {
+        continue;
+      }
+
+      if ((i <= rgPhi.nbVals-2) && (j <= rgTheta.nbVals-2)) {
+        ibo.push_back( i*rgTheta.nbVals + j);   // i   ; j
+        ibo.push_back(ni*rgTheta.nbVals + j);   // i+1 ; j
+        ibo.push_back( i*rgTheta.nbVals + nj);  // i   ; j+1
+
+        ibo.push_back( i*rgTheta.nbVals + nj);  // i   ; j+1
+        ibo.push_back(ni*rgTheta.nbVals +  j);  // i+1 ; j
+        ibo.push_back(ni*rgTheta.nbVals + nj);  // i+1 ; j+1
+      }
+    }
+  }
 
   std::shared_ptr<VAO> vao(new VAO(2));
   vao->setVBO(0, positions);
@@ -48,8 +86,10 @@ void PA3Application::makeASphere(unsigned int nbPhi, unsigned int nbTheta)
 
 void PA3Application::makeATorus(unsigned int nbPhi, unsigned int nbTheta, float smallRadius)
 {
-  std::shared_ptr<VAO> vao;
-  FAIL_BECAUSE_INCOMPLETE;
+  auto posFunc = [&smallRadius](float phi, float theta) { return glm::vec3((1+smallRadius*cos(theta))*cos(phi), (1+smallRadius*cos(theta))*sin(phi), smallRadius*sin(theta)); };
+  const float pi = glm::pi<float>();
+  
+  std::shared_ptr<VAO> vao = makeParamSurf(DiscreteLinRange(nbPhi, 0, 2 * pi), DiscreteLinRange(nbTheta, 0, 2 * pi), posFunc, true, true);
 
   glm::mat4 mw(1);
   mw = glm::translate(mw, {0.5, 0, 0});
@@ -74,12 +114,13 @@ void PA3Application::makeAShell(unsigned int nbPhi, unsigned int nbTheta)
 void PA3Application::initGLState() const
 {
   glClearColor(1, 1, 1, 1);
-  std::cerr << __PRETTY_FUNCTION__ << ": You must complete the implementation here (look at the documentation in the header)" << std::endl;
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
 }
 
 void PA3Application::renderFrame()
 {
-  std::cerr << __PRETTY_FUNCTION__ << ": You must complete the implementation here (look at the documentation in the header)" << std::endl;
+  glClear(GL_DEPTH_BUFFER_BIT);
   glClear(GL_COLOR_BUFFER_BIT);
   for (const auto & vao : m_vaos) {
     vao->draw(m_renderMode);

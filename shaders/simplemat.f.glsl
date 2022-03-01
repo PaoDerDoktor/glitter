@@ -50,7 +50,7 @@ out vec4 fragColor;
  */
 vec3 computeLightLambert(const in DirLight light, const in vec3 normal, const in vec3 diffuse)
 {
-  return vec3(0);
+  return max(0, dot(normalize(light.direction), normalize(normal)))*diffuse*light.intensity;
 }
 
 /**
@@ -66,7 +66,13 @@ vec3 computeLightLambert(const in DirLight light, const in vec3 normal, const in
  */
 vec3 computeLightSpecular(const in DirLight light, const in vec3 normal, const in vec3 directionToCamera, const in vec3 specular, const in float shininess)
 {
-  return vec3(0);
+  vec3 reflectDir = reflect(normalize(light.direction), normalize(normal));
+  float computedSpec = pow(max(0, dot(normalize(directionToCamera), normalize(reflectDir))), shininess);
+  return light.intensity * (computedSpec * specular);
+}
+
+float remap(float i) {
+  return (i/128)-1;
 }
 
 /**
@@ -82,8 +88,13 @@ vec3 computeLightSpecular(const in DirLight light, const in vec3 normal, const i
  */
 vec3 computeMicroNormal(const in vec3 macroNormal, const in vec3 macroTangent, const in vec3 macroBitangent)
 {
-  vec3 microNormal = macroNormal;
-  return microNormal;
+  vec4 normalMapHere = texture(material.normalmap, uv);
+  
+  float nr = normalMapHere.x*255;
+  float ng = normalMapHere.y*255;
+  float nb = normalMapHere.z*255;
+
+  return remap(nr)*macroTangent + remap(ng)*macroBitangent + remap(nb)*macroNormal;
 }
 
 vec4 normal2Color(vec3 n)
