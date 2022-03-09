@@ -400,26 +400,38 @@ template <> void Texture::setData<GLubyte>(const Image<GLubyte> & image, bool mi
 
   switch (image.channels)
   {
-  case 3:
-    format = GL_RGB;
-    break;
-  
-  case 4:
-  default:
-    format = GL_RGBA;
-    break;
+    case 1:
+      format = GL_R;
+      break;
+
+    case 2:
+      format = GL_RG;
+      break;
+
+    case 3:
+      format = GL_RGB;
+      break;
+    
+    case 4:
+    default:
+      format = GL_RGBA;
+      break;
   }
 
   this->bind();
   switch (this->m_target) {
-  case GL_TEXTURE_2D:
-    glTexImage2D(this->m_target, 0, format, image.width, image.height, 0, format, GL_UNSIGNED_BYTE, image.data);
-    break;
-  
-  case 3:
-  default:
-    glTexImage3D(this->m_target, 0, format, image.width, image.height, image.depth, 0, format, GL_UNSIGNED_BYTE, image.data);
-    break;
+    case GL_TEXTURE_1D:
+      glTexImage1D(this->m_target, 0, format, image.width, 0, format, GL_UNSIGNED_INT, image.data);
+      break;
+      
+    case GL_TEXTURE_2D:
+      glTexImage2D(this->m_target, 0, format, image.width, image.height, 0, format, GL_UNSIGNED_BYTE, image.data);
+      break;
+
+    case GL_TEXTURE_3D:
+    default:
+      glTexImage3D(this->m_target, 0, format, image.width, image.height, image.depth, 0, format, GL_UNSIGNED_BYTE, image.data);
+      break;
   }
 
   if (mipmaps) {
