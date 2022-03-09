@@ -18,6 +18,7 @@ if(NOT GLFW3_FOUND)
     add_subdirectory(ext/glfw)
     include_directories(ext/glfw/include)
     set(GLFW3_LIBRARIES glfw)
+    set(GLFW3_LIBRARIES ${GLFW3_LIBRARIES} PARENT_SCOPE)
 endif()
 
 # glew
@@ -35,6 +36,7 @@ if(GLEW_FOUND)
         SET(APPLE_FRAMEWORKS "-framework Cocoa -framework IOkit -framework CoreVideo")
         set(GLEW_LIBRARIES ${GLEW_LIBRARIES}  ${APPLE_FRAMEWORKS})
     endif(APPLE)
+    set(GLEW_LIBRARIES ${GLEW_LIBRARIES} PARENT_SCOPE)
 else()
     add_definitions(-DGLEW_STATIC)
     option(glew-cmake_BUILD_SHARED "" OFF)
@@ -43,6 +45,7 @@ else()
     include_directories(ext/glew/include ext/glew/src)
     include_directories(${OPENGL_INCLUDE_DIR})
     set(GLEW_LIBRARIES libglew_static)
+    set(GLEW_LIBRARIES ${GLEW_LIBRARIES} PARENT_SCOPE)
 endif()
 
 # glm
