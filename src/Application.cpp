@@ -18,7 +18,7 @@ void Application::mainLoop()
 {
   GLFWwindow * window = glfwGetCurrentContext();
   while (!glfwWindowShouldClose(window)) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS or glfwGetKey(window, 'Q') == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
       break;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
