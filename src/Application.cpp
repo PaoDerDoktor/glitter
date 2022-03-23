@@ -21,9 +21,8 @@ void Application::mainLoop()
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
       break;
     }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
-      update();
-    }
+
+    update();
     renderFrame();
     // swap back and front buffers
     glfwSwapBuffers(window);
