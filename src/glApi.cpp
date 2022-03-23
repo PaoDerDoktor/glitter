@@ -327,6 +327,11 @@ template <> void Program::uniformDispatcher(int location, const int & val)
   glUniform1i(location, val);
 }
 
+template <> void Program::uniformDispatcher(int location, const bool & val)
+{
+  glUniform1i(location, val);
+}
+
 template <> void Program::uniformDispatcher(int location, const uint & val)
 {
   glUniform1ui(location, val);
